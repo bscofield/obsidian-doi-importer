@@ -34,7 +34,8 @@ export default class DoiImporter extends Plugin {
 
 				// get the metadata for the DOI
 				const url = `https://api.crossref.org/works/${doi}`
-				const data = fetch(url)
+				try {
+					const data = fetch(url)
 					.then(response => response.json())
 					.then(data => {
 						const metadata = data.message;
@@ -92,7 +93,13 @@ TK
 						}
 					}
 				)
+				} catch (error) {
+					console.error(error)
+					// notice
+					new Notice('Error fetching metadata')
+				}
 			}
+
 		});
 
 

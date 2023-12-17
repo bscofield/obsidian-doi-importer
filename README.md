@@ -7,3 +7,7 @@ When it's installed, highlight a DOI and either use the "Import reference from D
 
 ## Settings
 Reference note path (defaults to `/references`) - where you want the importer to create new notes
+
+
+## Built on
+[Obsidian sample plugin](https://github.com/obsidianmd/obsidian-sample-plugin)

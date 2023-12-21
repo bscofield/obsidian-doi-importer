@@ -34,36 +34,38 @@ export default class DoiImporter extends Plugin {
 
 				// get the metadata for the DOI
 				const url = `https://api.crossref.org/works/${doi}`
-				try {
-					const data = fetch(url)
-					.then(response => response.json())
-					.then(data => {
-						const metadata = data.message;
+				fetch(url)
+				.then(response => {
+					if (!response.ok) throw new Error(response.statusText)
+					return response.json()
+				})
+				.then(data => {
+					const metadata = data.message;
 
-						const notePath = `${this.settings.referenceNotePath}/${metadata.title}.md`
-						const firstAuthor = metadata.author[0].family.toLowerCase()
+					const notePath = `${this.settings.referenceNotePath}/${metadata.title}.md`
+					const firstAuthor = metadata.author[0].family.toLowerCase()
 
-						const year = metadata.created['date-parts'][0][0]
-						const alias = `${firstAuthor}${year}`
+					const year = metadata.created['date-parts'][0][0]
+					const alias = `${firstAuthor}${year}`
 
-						const authors = metadata.author.map((author: any) => {
-							return `${author.given} ${author.family}`
-						}).join(', ')
+					const authors = metadata.author.map((author: any) => {
+						return `${author.given} ${author.family}`
+					}).join(', ')
 
-						const contents = {
-							title: metadata.title[0],
-							authors,
-							year,
-							journal: metadata['container-title'][0],
-							volume: metadata.volume,
-							issue: metadata.issue,
-							page: metadata.page,
-							doi: metadata.DOI,
-							url: metadata.URL
-						}
+					const contents = {
+						title: metadata.title[0],
+						authors,
+						year,
+						journal: metadata['container-title'][0],
+						volume: metadata.volume,
+						issue: metadata.issue,
+						page: metadata.page,
+						doi: metadata.DOI,
+						url: metadata.URL
+					}
 
-						// create the note
-							const note = `# ${contents.title}
+					// create the note
+						const note = `# ${contents.title}
 
 - Author: ${contents.authors}
 - Year: ${contents.year}
@@ -92,12 +94,11 @@ TK
 							new Notice('Note already exists')
 						}
 					}
-				)
-				} catch (error) {
+				).catch(error => {
 					console.error(error)
 					// notice
 					new Notice('Error fetching metadata')
-				}
+				})
 			}
 
 		});

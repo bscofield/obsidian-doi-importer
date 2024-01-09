@@ -41,8 +41,10 @@ export default class DoiImporter extends Plugin {
 				})
 				.then(data => {
 					const metadata = data.message;
+					// split on first instance of : or /
+					const title = metadata.title[0].split(/[:\/]/)
 
-					const notePath = `${this.settings.referenceNotePath}/${metadata.title}.md`
+					const notePath = `${this.settings.referenceNotePath}/${title}.md`
 					const firstAuthor = metadata.author[0].family.toLowerCase()
 
 					const year = metadata.created['date-parts'][0][0]

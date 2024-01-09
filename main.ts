@@ -41,10 +41,9 @@ export default class DoiImporter extends Plugin {
 				})
 				.then(data => {
 					const metadata = data.message;
-					// split on first instance of : or /
-					const title = metadata.title[0].split(/[:\/]/)
+					const simpleTitle = metadata.title[0].split(/[:\/]/)[]
 
-					const notePath = `${this.settings.referenceNotePath}/${title}.md`
+					const notePath = `${this.settings.referenceNotePath}/${simpleTitle}.md`
 					const firstAuthor = metadata.author[0].family.toLowerCase()
 
 					const year = metadata.created['date-parts'][0][0]
@@ -55,6 +54,7 @@ export default class DoiImporter extends Plugin {
 					}).join(', ')
 
 					const contents = {
+						noteTitle: simpleTitle,
 						title: metadata.title[0],
 						authors,
 						year,
@@ -90,7 +90,7 @@ TK
 							})
 
 							// replace the selection with the note link
-							const link = `[[${contents.title}|${contents.doi}]]`
+							const link = `[[${contents.noteTitle}|${contents.doi}]]`
 							editor.replaceSelection(link)
 						} else {
 							new Notice('Note already exists')
